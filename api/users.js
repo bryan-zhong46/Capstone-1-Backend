@@ -5,7 +5,8 @@ const { Poll, User } = require("../database");
 // GET all users
 router.get("/", async (req, res) => {
     try {
-        res.send("This is the users route.")
+        const users = await User.findAll();
+        res.status(200).json(users);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the users route.");
