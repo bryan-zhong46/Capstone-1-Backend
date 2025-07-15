@@ -26,7 +26,7 @@ const authenticateJWT = (req, res, next) => {
 // Auth0 authentication route
 router.post("/auth0", async (req, res) => {
   try {
-    const { auth0Id, email, username } = req.body;
+    const { auth0Id, email, username, picture } = req.body;
 
     if (!auth0Id) {
       return res.status(400).send({ error: "Auth0 ID is required" });
@@ -53,6 +53,7 @@ router.post("/auth0", async (req, res) => {
         email: email || null,
         username: username || email?.split("@")[0] || `user_${Date.now()}`, // Use email prefix as username if no username provided
         passwordHash: null, // Auth0 users don't have passwords
+        picture: picture || null,
       };
 
       // Ensure username is unique
@@ -74,6 +75,7 @@ router.post("/auth0", async (req, res) => {
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        picture: user.picture,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -93,6 +95,7 @@ router.post("/auth0", async (req, res) => {
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        picture: user.picture,
       },
     });
   } catch (error) {
