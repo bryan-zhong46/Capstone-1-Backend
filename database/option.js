@@ -20,7 +20,7 @@ const Option = db.define('Option', {
     }
 });
 
-Option.belongsTo(models.Poll, {foreignKey: 'poll_id'});
-Option.hasMany(models.PollVote, {foreignKey: 'option_id'});
+//Option.belongsTo(db.Poll, {foreignKey: 'poll_id'});
+//Option.hasMany(db.PollVote, {foreignKey: 'option_id'});
 
 module.exports = Option;

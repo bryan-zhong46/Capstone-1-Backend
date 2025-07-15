@@ -3,6 +3,11 @@ const db = require("./db");
 const bcrypt = require("bcrypt");
 
 const User = db.define("user", {
+  user_id:  {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -34,8 +34,8 @@ const Poll = db.define('Poll', {
     }
 });
 
-Poll.belongsTo(models.User, {foreignKey: 'creator_id'});
-Poll.hasMany(models.Option, {foreignKey: 'poll_id'});
-Poll.hasMany(models.PollVote, {foreignKey: 'poll_id'});
+//Poll.belongsTo(User, {foreignKey: 'creator_id'});
+//Poll.hasMany(Option, {foreignKey: 'poll_id'});
+//Poll.hasMany(PollVote, {foreignKey: 'poll_id'});
 
 module.exports = Poll;
