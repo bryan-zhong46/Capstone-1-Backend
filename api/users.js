@@ -11,3 +11,5 @@ router.get("/", async (req, res) => {
         res.status(500).send("Error from the users route.");
     }
 });
+
+module.exports = router;
