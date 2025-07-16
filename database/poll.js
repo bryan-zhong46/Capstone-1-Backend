@@ -31,6 +31,10 @@ const Poll = db.define('Poll', {
     },
     poll_status: {
         type: DataTypes.ENUM('draft', 'published', 'closed'),
+    },
+    isDisabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     }
 });
 
