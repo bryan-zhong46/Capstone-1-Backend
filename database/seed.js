@@ -34,9 +34,9 @@ const seed = async () => {
 
     const pollVotes = await PollVote.bulkCreate([
       { poll_id: polls[0].poll_id, user_id: users[0].user_id, option_id: options[0].option_id},
-      { poll_id: polls[0].poll_id, user_id: users[1].user_id, option_id: options[1].option_id},
-      { poll_id: polls[1].poll_id, user_id: users[0].user_id, option_id: options[2].option_id},
-      { poll_id: polls[1].poll_id, user_id: users[1].user_id, option_id: options[1].option_id},
+      { poll_id: polls[0].poll_id, user_id: users[2].user_id, option_id: options[1].option_id},
+      { poll_id: polls[1].poll_id, user_id: users[1].user_id, option_id: options[2].option_id},
+      { poll_id: polls[1].poll_id, user_id: users[2].user_id, option_id: options[1].option_id},
     ]);
 
     // Create more seed data here once you've created your models

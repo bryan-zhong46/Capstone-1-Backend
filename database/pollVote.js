@@ -23,8 +23,4 @@ const PollVote = db.define('PollVote', {
     }
 });
 
-//PollVote.belongsTo(db.User, {foreignKey: 'user_id'});
-//PollVote.belongsTo(db.Poll, {foreignKey: 'poll_id'});
-//PollVote.belongsTo(db.Option, {foreignKey: 'option_id'});
-
 module.exports = PollVote;
