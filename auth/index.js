@@ -70,7 +70,7 @@ router.post("/auth0", async (req, res) => {
     // Generate JWT token with auth0Id included
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
@@ -89,7 +89,7 @@ router.post("/auth0", async (req, res) => {
     res.send({
       message: "Auth0 authentication successful",
       user: {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
@@ -131,7 +131,7 @@ router.post("/signup", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
@@ -149,7 +149,7 @@ router.post("/signup", async (req, res) => {
 
     res.send({
       message: "User created successfully",
-      user: { id: user.id, username: user.username },
+      user: { id: user.user_id, username: user.username },
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -182,7 +182,7 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
@@ -200,7 +200,7 @@ router.post("/login", async (req, res) => {
 
     res.send({
       message: "Login successful",
-      user: { id: user.id, username: user.username },
+      user: { id: user.user_id, username: user.username },
     });
   } catch (error) {
     console.error("Login error:", error);
