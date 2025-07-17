@@ -27,4 +27,25 @@ router.get("/:id", async(req, res) => {
 })
 );
 
+// UPDATE one user
+router.patch("/users/:id", async(req, res) => {
+    try {
+        const userID = Number(req.paramas.id);
+        const user = await user.findByPk(userID);
+        const updatedInfo = req.body;
+        if (user === null) return res.sendStatus(404);
+
+        user.email = updatedInfo.email;
+        user.passwordHash = updatedInfo.passwordHash;
+        user.isAdmin = updatedInfo.isAdmin;
+        user.isDisabled = updatedInfo.isDisabled;
+        user.save();
+        res.sendStatus(200);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the user route.");
+    }
+})
+
 module.exports = router;
