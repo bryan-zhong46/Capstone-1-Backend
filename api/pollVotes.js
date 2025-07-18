@@ -38,7 +38,6 @@ router.post("/", async (req, res) => {
             user_id,
             option_id,
             vote_date: new Date(),
-            number_of_votes: 0,
             rank,
             isSubmitted
         });
@@ -52,7 +51,7 @@ router.post("/", async (req, res) => {
 //PATCH an existing pollvote
 router.patch("/:id", async(req, res) => {
     try {
-        const pollVote = await PollVote.findByPk(req.params.id);
+        const pollVote = await PollVote.findByPk(Number(req.params.id));
         if (!pollVote) {
             return res.status(404).send("Pollvote not found");
         }
@@ -71,7 +70,7 @@ router.patch("/:id", async(req, res) => {
 //I don't think we'll need it but maybe for admin purposes 
 router.delete("/:id", async(req, res) => {
     try {
-        const pollVote = await PollVote.findByPk(req.params.id);
+        const pollVote = await PollVote.findByPk(Number(req.params.id));
         if (!pollVote) {
             return res.status(404).send("Pollvote not found");
         }
