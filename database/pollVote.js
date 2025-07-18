@@ -2,13 +2,18 @@ const { DataTypes } = require("sequelize");
 const db = require("./db");
 
 const PollVote = db.define('PollVote', {
-    poll_id: {
+    pollvote_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+    },
+    poll_id: {
+        type: DataTypes.INTEGER,
+        //primaryKey: true,
     },
     user_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
+        //primaryKey: true,
     },
     option_id: {
         type: DataTypes.INTEGER,
@@ -20,6 +25,10 @@ const PollVote = db.define('PollVote', {
     },
     rank: {
         type: DataTypes.INTEGER,
+    },
+    isSubmitted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     }
 });
 
