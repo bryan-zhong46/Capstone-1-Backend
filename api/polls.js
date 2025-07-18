@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Poll, User } = require("../database");
+const { Poll } = require("../database");
 
 // GET all polls
 router.get("/", async (req, res) => {
