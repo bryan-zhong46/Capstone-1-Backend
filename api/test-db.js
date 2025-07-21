@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require("../database");
+// const { User } = require("../database");
 // replit code
-// const { User } = require("../dummy-database");
+const { User } = require("../dummy-database");
 
 // You don't actually need this route, it's just a good way to confirm that your database connection is working.
 // Feel free to delete this entire file.
