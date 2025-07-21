@@ -16,6 +16,12 @@ const User = db.define("user", {
       len: [3, 20],
     },
   },
+  first_name: {
+    type: DataTypes.STRING,
+  },
+  last_name: {
+    type: DataTypes.STRING,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: true,

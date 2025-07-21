@@ -13,6 +13,7 @@ const Option = db.define('Option', {
     },
     is_eliminated: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
     option_text: {
         type: DataTypes.STRING,
