@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const apiRouter = require("./api");
 const { router: authRouter } = require("./auth");
-const { db } = require("./database"); // comment out for replit
+// const { db } = require("./database"); // comment out for replit
 const cors = require("cors");
 
 const PORT = process.env.PORT || 8080;
@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: FRONTEND_URL,
     credentials: true,
-  })
+  }),
 );
 
 // cookie parser middleware
@@ -39,7 +39,7 @@ app.use((err, req, res, next) => {
 
 const runApp = async () => {
   try {
-    await db.sync({ force: true }); // comment out for replit
+    // await db.sync({ force: true }); // comment out for replit
     console.log("✅ Connected to the database");
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
