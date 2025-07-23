@@ -29,19 +29,42 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// // GET all options with the same poll_id
+// router.get("/", async (req, res) => {
+//     try {
+//         const poll_id = req.body;
+//         const optionsByPollID = await Option.findAll({ where: { poll_id: poll_id}});
+//         res.status(200).json(options);
+//     } catch (error) {
+//         console.error(error);
+//         console.log("Error getting options by poll id")
+//     }
+// });
+
 // POST options from an array
+// router.post("/", async (req, res) => {
+//     try {
+//         options = req.body;
+//         for (let i = 0; i < options.length; i++) {
+//             // Each option should be of the form:
+//             // { id: ..., option_text:..., poll_id: ... }
+//             console.log(options[i]);
+//             const { option_text, poll_id } = options[i];
+//             // create a new Option w/ option_text and poll_id
+//             const newOption = await Option.create(option_text, poll_id);
+//             res.status(201).json(newOption); // 201 for created
+//         }
+
+// POST (Create) one option
 router.post("/", async (req, res) => {
     try {
-        options = req.body;
-        for (let i = 0; i < options.length; i++) {
-            // Each option should be of the form:
-            // { id: ..., option_text:..., poll_id: ... }
-            console.log(options[i]);
-            const { option_text, poll_id } = options[i];
-            // create a new Option w/ option_text and poll_id
-            const newOption = await Option.create(option_text, poll_id);
-            res.status(201).json(newOption); // 201 for created
-        }
+        const { poll_id, is_eliminated, option_text } = req.body;
+        const newOption = await Option.create({
+            poll_id,
+            is_eliminated,
+            option_text,
+        });
+        res.status(201).json(newOption); // 201 for created
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the post new option route");

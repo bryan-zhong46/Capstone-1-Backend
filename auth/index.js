@@ -26,7 +26,7 @@ const authenticateJWT = (req, res, next) => {
 // Auth0 authentication route
 router.post("/auth0", async (req, res) => {
   try {
-    const { auth0Id, email, username } = req.body;
+    const { auth0Id, email, username  } = req.body;
 
     if (!auth0Id) {
       return res.status(400).send({ error: "Auth0 ID is required" });
@@ -70,10 +70,12 @@ router.post("/auth0", async (req, res) => {
     // Generate JWT token with auth0Id included
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        isAdmin: user.isAdmin,
+        isDisabled: user.isDisabled,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -89,10 +91,12 @@ router.post("/auth0", async (req, res) => {
     res.send({
       message: "Auth0 authentication successful",
       user: {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        isAdmin: user.isAdmin,
+        isDisabled: user.isDisabled,
       },
     });
   } catch (error) {
@@ -131,10 +135,12 @@ router.post("/signup", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        isAdmin: user.isAdmin,
+        isDisabled: user.isDisabled,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -149,7 +155,7 @@ router.post("/signup", async (req, res) => {
 
     res.send({
       message: "User created successfully",
-      user: { id: user.id, username: user.username },
+      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled },
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -182,10 +188,12 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         username: user.username,
         auth0Id: user.auth0Id,
         email: user.email,
+        isAdmin: user.isAdmin,
+        isDisabled: user.isDisabled,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -200,7 +208,7 @@ router.post("/login", async (req, res) => {
 
     res.send({
       message: "Login successful",
-      user: { id: user.id, username: user.username },
+      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled },
     });
   } catch (error) {
     console.error("Login error:", error);
