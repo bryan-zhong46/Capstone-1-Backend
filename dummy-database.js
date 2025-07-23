@@ -83,6 +83,12 @@ const Poll = {
     polls.push(poll);
     return poll;
   },
+  createOption: function (poll, option) {
+    option.options_id = nextOptionId++;
+    option.poll_id = poll.poll_id;
+    options.push(option);
+    return option;
+  },
   update: function (id, poll) {
     const index = polls.findIndex((poll) => poll.id === id);
     if (index === -1) {
@@ -138,9 +144,16 @@ const Option = {
   findByPk: function (id) {
     return options.find((option) => option.id === id);
   },
-  create: function (option) {
-    console.log(option)
-    option.options_id = nextOptionId++;
+  create: function (option_text, poll_id) {
+    console.log(option_text);
+    console.log(poll_id);
+    const option = {
+      options_id: nextOptionId++,
+      option_text: option_text,
+      poll_id: poll_id,
+    };
+    // option.options_id = nextOptionId++;
+    // option.poll_id = pollId;
     options.push(option);
     return option;
   },

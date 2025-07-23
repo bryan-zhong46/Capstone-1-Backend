@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-// const { Option } = require("../database");
+const { Option } = require("../database");
 // replit code
-const { Option } = require("../dummy-database");
+// const { Option } = require("../dummy-database");
 
 //GET all options
 router.get("/", async (req, res) => {
@@ -34,12 +34,12 @@ router.post("/", async (req, res) => {
     try {
         options = req.body;
         for (let i = 0; i < options.length; i++) {
-            const poll_id = options[i].poll_id;
-            const option_text = options[i].option_text;
-            const newOption = await Option.create({
-                poll_id,
-                option_text,
-            });
+            // Each option should be of the form:
+            // { id: ..., option_text:..., poll_id: ... }
+            console.log(options[i]);
+            const { option_text, poll_id } = options[i];
+            // create a new Option w/ option_text and poll_id
+            const newOption = await Option.create(option_text, poll_id);
             res.status(201).json(newOption); // 201 for created
         }
     } catch (error) {
