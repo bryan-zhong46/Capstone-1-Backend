@@ -8,7 +8,6 @@ const { Poll } = require("../database");
 router.get("/", async (req, res) => {
     try {
         const polls = await Poll.findAll();
-        console.log("Polls from DB:", polls);
         res.status(200).json(polls);
     } catch (error) {
         console.error(error);
@@ -35,7 +34,6 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/options", async (req, res) => {
     try {
         const poll = await Poll.findByPk(req.params.id);
-        console.log("POLL", poll);
         if (!poll) {
             return res.status(404).send({ error: "Poll not found" });
         }
@@ -98,12 +96,18 @@ router.post("/published", async (req, res) => {
 // PATCH an existing poll
 router.patch("/:id", async (req, res) => {
     try {
+        const { newPollData, newPollOptions } = req.body;
+        console.log("NEW POLL DATA: ", newPollData);
+        console.log("NEW POLL OPTIONS: ", newPollOptions);
         const poll = await Poll.findByPk(req.params.id);
+        const pollOptions = await poll.getOptions();
+        console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptions);
         if (!poll) {
             return res.status(404).send("Poll not found");
         }
 
-        await poll.update(req.body);
+        await poll.update(newPollData);
+        await poll.setOptions(newPollOptions);
         res.status(200).json(poll);
     } catch (error) {
         console.error(error);
