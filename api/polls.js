@@ -14,6 +14,18 @@ router.get("/", async (req, res) => {
     }
 });
 
+// GET polls of a specific user
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const polls = await Poll.findAll({ where: { creator_id: userId } });
+        res.status(200).json(polls);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the get polls for a specific user route");
+    }
+});
+
 // GET one poll
 router.get("/:id", async(req, res) => {
     try {
