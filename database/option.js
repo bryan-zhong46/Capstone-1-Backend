@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("./db");
 
-const Option = db.define('Option', {
+const Option = db.define("Option", {
     options_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -18,7 +18,10 @@ const Option = db.define('Option', {
     option_text: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    id: {
+        type: DataTypes.INTEGER,
+    },
 });
 
 module.exports = Option;
