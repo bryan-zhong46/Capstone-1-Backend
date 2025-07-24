@@ -39,7 +39,7 @@ app.use((err, req, res, next) => {
 
 const runApp = async () => {
   try {
-    await db.sync({ alter: true });
+    await db.sync({ force: true });
     console.log("✅ Connected to the database");
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
