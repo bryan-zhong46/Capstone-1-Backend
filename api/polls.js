@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Poll } = require("../database");
+const { Poll, PollVote } = require("../database");
 
 // GET all polls
 router.get("/", async (req, res) => {
@@ -29,7 +29,29 @@ router.get("/:id", async(req, res) => {
     }
 });
 
-// POST (Create) one pollvote
+//GET all Pollvotes for a specific poll
+router.get("/:poll_id/results", async (req, res) => {
+    try {
+        const poll_id = req.params.poll_id;
+
+        const poll = await Poll.findByPk(poll_id);
+        if (!poll) return res.status(404).json({ error: "Poll not found" });
+        if (poll.poll_status !== "closed")
+            return res.status(403).json({ error: "Poll is not closed" });
+
+        const votes = await PollVote.findAll({
+            where: { poll_id },
+            order: [["user_id", "ASC"], ["rank", "ASC"]]
+        });
+
+        res.json(votes);
+    } catch (error) {
+        console.error("Error fetching poll results:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// POST (Create) one poll
 router.post("/", async (req, res) => {
     try {
         console.log("Request body:", req.body);
