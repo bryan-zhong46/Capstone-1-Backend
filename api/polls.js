@@ -45,21 +45,11 @@ router.get("/:id/options", async (req, res) => {
     }
 });
 
-// POST (Create) one poll
+// POST (Create) one  poll
 router.post("/", async (req, res) => {
     try {
         console.log("Request body:", req.body);
         const { pollData, pollOptions } = req.body;
-        // const newPoll = await Poll.create({
-        //     creator_id,
-        //     title,
-        //     description,
-        //     expiration,
-        //     number_of_votes: 0,
-        //     auth_required: false,
-        //     poll_status: "draft",
-        //     isDisabled: false,
-        // });
         const newPoll = await Poll.create(pollData);
 
         if (!newPoll) {
@@ -68,10 +58,33 @@ router.post("/", async (req, res) => {
 
         // create the poll options associated w/ this poll
         for (let i = 0; i < pollOptions.length; i++) {
-            console.log("CREATING A POLL OPTION...");
             pollOptions[i].poll_id = newPoll.poll_id;
             newOption = await newPoll.createOption(pollOptions[i]);
-            console.log("NEW POLL OPTION: ", newOption);
+        }
+
+        res.status(201).json(newPoll); // 201 for created
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the post new poll route");
+    }
+});
+
+// POST (Create) one published poll
+router.post("/published", async (req, res) => {
+    try {
+        console.log("Request body:", req.body);
+        const { pollData, pollOptions } = req.body;
+        const pPollData = { ...pollData, poll_status: "published" };
+        const newPoll = await Poll.create(pPollData);
+
+        if (!newPoll) {
+            console.log("Poll does not exist");
+        }
+
+        // create the poll options associated w/ this poll
+        for (let i = 0; i < pollOptions.length; i++) {
+            pollOptions[i].poll_id = newPoll.poll_id;
+            newOption = await newPoll.createOption(pollOptions[i]);
         }
 
         res.status(201).json(newPoll); // 201 for created
