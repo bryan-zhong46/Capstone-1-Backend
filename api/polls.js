@@ -35,10 +35,12 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/options", async (req, res) => {
     try {
         const poll = await Poll.findByPk(req.params.id);
+        console.log("POLL", poll);
         if (!poll) {
             return res.status(404).send({ error: "Poll not found" });
         }
         const options = await poll.getOptions();
+        console.log("OPTIONS", options);
         res.send(options);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch poll's options" });
@@ -48,7 +50,6 @@ router.get("/:id/options", async (req, res) => {
 // POST (Create) one  poll
 router.post("/", async (req, res) => {
     try {
-        console.log("Request body:", req.body);
         const { pollData, pollOptions } = req.body;
         const newPoll = await Poll.create(pollData);
 
@@ -72,7 +73,6 @@ router.post("/", async (req, res) => {
 // POST (Create) one published poll
 router.post("/published", async (req, res) => {
     try {
-        console.log("Request body:", req.body);
         const { pollData, pollOptions } = req.body;
         const pPollData = { ...pollData, poll_status: "published" };
         const newPoll = await Poll.create(pPollData);
@@ -85,6 +85,7 @@ router.post("/published", async (req, res) => {
         for (let i = 0; i < pollOptions.length; i++) {
             pollOptions[i].poll_id = newPoll.poll_id;
             newOption = await newPoll.createOption(pollOptions[i]);
+            console.log("NEW OPTION: ", newOption);
         }
 
         res.status(201).json(newPoll); // 201 for created
