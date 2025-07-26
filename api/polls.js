@@ -48,7 +48,10 @@ router.get("/:id/options", async (req, res) => {
 // POST (Create) one  poll
 router.post("/", async (req, res) => {
     try {
-        const { pollData, pollOptions } = req.body;
+        let { pollData, pollOptions, isPublishing } = req.body;
+        if (isPublishing) {
+            pollData = { ...pollData, poll_status: "published" };
+        }
         const newPoll = await Poll.create(pollData);
 
         if (!newPoll) {
@@ -68,7 +71,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// POST (Create) one published poll
+/* // POST (Create) one published poll
 router.post("/published", async (req, res) => {
     try {
         const { pollData, pollOptions } = req.body;
@@ -91,23 +94,68 @@ router.post("/published", async (req, res) => {
         console.error(error);
         res.status(500).send("Error from the post new poll route");
     }
+}); */
+
+// PATCH an existing poll
+router.patch("/:id", async (req, res) => {
+    try {
+        let { pollData, pollOptions, isPublishing } = req.body;
+        if (isPublishing) {
+            pollData = { ...pollData, poll_status: "published" };
+        }
+        // console.log("NEW POLL DATA: ", pollData);
+        // console.log("NEW POLL OPTIONS: ", pollOptions);
+        const poll = await Poll.findByPk(req.params.id);
+        const pollOptionsOld = await poll.getOptions();
+        // console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptionsOld);
+        if (!poll) {
+            return res.status(404).send("Poll not found");
+        }
+
+        await poll.update(pollData);
+        // need to destroy all the options that were previously associated with this poll
+        for (let i = 0; i < pollOptionsOld.length; i++) {
+           const optionOld = pollOptionsOld[i];
+           await optionOld.destroy();
+        }
+        await poll.setOptions([]); // clear all options
+        // create the poll options associated w/ this poll
+        for (let i = 0; i < pollOptions.length; i++) {
+            pollOptions[i].poll_id = poll.poll_id;
+            newOption = await poll.createOption(pollOptions[i]);
+        }
+        res.status(200).json(poll);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the patch existing poll route");
+    }
 });
 
 // PATCH an existing poll
 router.patch("/:id", async (req, res) => {
     try {
-        const { newPollData, newPollOptions } = req.body;
-        console.log("NEW POLL DATA: ", newPollData);
-        console.log("NEW POLL OPTIONS: ", newPollOptions);
+        const { pollData, pollOptions } = req.body;
+        // console.log("NEW POLL DATA: ", pollData);
+        // console.log("NEW POLL OPTIONS: ", pollOptions);
         const poll = await Poll.findByPk(req.params.id);
-        const pollOptions = await poll.getOptions();
-        console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptions);
+        const pollOptionsOld = await poll.getOptions();
+        // console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptionsOld);
         if (!poll) {
             return res.status(404).send("Poll not found");
         }
 
-        await poll.update(newPollData);
-        await poll.setOptions(newPollOptions);
+        await poll.update(pollData);
+        // need to destroy all the options that were previously associated with this poll
+        for (let i = 0; i < pollOptionsOld.length; i++) {
+           const optionOld = pollOptionsOld[i];
+           await optionOld.destroy();
+        }
+        await poll.setOptions([]); // clear all options
+        // create the poll options associated w/ this poll
+        for (let i = 0; i < pollOptions.length; i++) {
+            pollOptions[i].poll_id = poll.poll_id;
+            newOption = await poll.createOption(pollOptions[i]);
+        }
         res.status(200).json(poll);
     } catch (error) {
         console.error(error);
