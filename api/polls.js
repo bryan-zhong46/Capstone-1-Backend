@@ -78,7 +78,7 @@ router.post("/", async (req, res) => {
             poll_status: 'draft',
             isDisabled: false
         });
-        res.status(201).json(newPoll); // 201 for created
+        res.status(201).json(newPoll); 
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the post new poll route");

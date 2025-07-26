@@ -1,17 +1,23 @@
+
+
 // api/pollResults.js
 const express = require("express");
 const router = express.Router();
 const { PollVote, Option } = require("../database"); 
-const { Op } = require("sequelize"); 
+// const { Op } = require("sequelize"); 
 
 // IRV Logic in JavaScript
-const calculateIrvWinner = (ballots) => {
+// New API route to calculate IRV winner for a specific poll
+router.get('/:pollId/irv-result', async (req, res) => {
+    const calculateIrvWinner = (ballots) => {
+    console.log("ballots")
   let candidates = new Set();
   ballots.forEach(ballot => {
     ballot.forEach(candidate => {
       candidates.add(candidate);
     });
   });
+   console.log( " candidates ", candidates);
 
   let activeCandidates = Array.from(candidates);
 
@@ -59,8 +65,8 @@ const calculateIrvWinner = (ballots) => {
     let candidatesToEliminate = [];
 
     for (const candidate in roundVotes) {
-      if (roundVotes[candidate] < minVotes) {
-        minVotes = roundVotes[candidate];
+      if (roundVotes[candidate] < minVotes ) { 
+        minVotes = roundVotes[candidate]; 
         candidatesToEliminate = [candidate];
       } else if (roundVotes[candidate] === minVotes) {
         candidatesToEliminate.push(candidate);
@@ -79,25 +85,23 @@ const calculateIrvWinner = (ballots) => {
     console.log(`Eliminating: ${candidateToEliminate} (with ${minVotes} votes). Remaining candidates: ${activeCandidates.join(', ')}`);
   }
 };
-
-
-// New API route to calculate IRV winner for a specific poll
-router.get('/:pollId/irv-result', async (req, res) => {
   try {
     const { pollId } = req.params;
+    console.log("ID", pollId);
 
     // Fetch all poll votes for the given pollId, including the associated Option details
     const rawVotes = await PollVote.findAll({
-      where: { poll_id: pollId, isSubmitted: true }, // Ensure we only count submitted votes
+      where: { poll_id: pollId }, 
       include: [{
         model: Option,
         attributes: ['options_id', 'option_text'] 
       }],
       order: [
-        ['user_id', 'ASC'], // Group by user to process their ranks
-        ['rank', 'ASC'] // Order by rank to get preferences correctly
+        ['user_id', 'ASC'], 
+        ['rank', 'ASC'] 
       ]
     });
+    console.log("rawVotes", rawVotes);
 
     // Group votes by user_id to reconstruct full ranked ballots
     const votesByUser = {};

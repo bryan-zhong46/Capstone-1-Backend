@@ -4,7 +4,7 @@ const { User, Poll, Option, PollVote } = require("./index");
 const seed = async () => {
   try {
     db.logging = false;
-    await db.sync({ force: true }); // Drop and recreate tables
+    await db.sync({ alter: true }); // Drop and recreate tables
 
     const users = await User.bulkCreate([
       { username: "admin", 
