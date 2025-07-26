@@ -17,8 +17,8 @@ const PollVote = db.define('PollVote', {
     },
     option_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, //Have to connect this to option_id in option.js
+        //allowNull: false,
+        //defaultValue: 0, //Have to connect this to option_id in option.js
     },
     vote_date: {
         type: DataTypes.DATE,
