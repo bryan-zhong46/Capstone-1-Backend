@@ -78,7 +78,7 @@ router.delete("/:id", async(req, res) => {
         }
 
         await pollVote.destroy();
-        await Poll.decrement('number_of_votes', { where: { id: poll_id } });
+        await Poll.decrement('number_of_votes', { where: { poll_id: poll_id } });
         res.status(200).send("Pollvote deleted successfully");
     } catch (error) {
         console.error(error);
