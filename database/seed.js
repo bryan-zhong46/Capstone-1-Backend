@@ -71,7 +71,7 @@ const seed = async () => {
       {
         poll_id: polls[1].poll_id,
         user_id: users[1].user_id,
-        option_id: options[2].option_id,
+        option_id: options[3].option_id,
         rank: 2,
       },
       {
