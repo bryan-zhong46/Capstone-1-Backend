@@ -46,6 +46,10 @@ const User = db.define("user", {
   isDisabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  profile_image: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 });
 
