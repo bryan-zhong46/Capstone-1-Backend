@@ -9,6 +9,7 @@ const apiRouter = require("./api");
 const { router: authRouter } = require("./auth");
 const { db } = require("./database"); // comment out for replit
 const cors = require("cors");
+const { generateUploadURL } = require("./s3.js");
 
 const PORT = process.env.PORT || 8080;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
@@ -20,8 +21,13 @@ app.use(
   cors({
     origin: FRONTEND_URL,
     credentials: true,
-  })
+  }),
 );
+
+app.get('/s3Url', async (req,res) => {
+  const url = await generateUploadURL();
+  res.send({url});
+})
 
 // cookie parser middleware
 app.use(cookieParser());
