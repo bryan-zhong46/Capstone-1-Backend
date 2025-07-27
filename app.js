@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: FRONTEND_URL,
     credentials: true,
-  })
+  }),
 );
 
 app.get('/s3Url', async (req,res) => {
