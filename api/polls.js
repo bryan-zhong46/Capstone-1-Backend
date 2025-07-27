@@ -172,7 +172,7 @@ router.post("/published", async (req, res) => {
 router.patch("/:id", async (req, res) => {
     try {
         let { pollData, pollOptions, isPublishing } = req.body;
-        if (isPublishing) {
+        if (isPublishing && pollData.poll_status !== "closed") {
             pollData = { ...pollData, poll_status: "published" };
         }
         // console.log("NEW POLL DATA: ", pollData);
@@ -199,8 +199,9 @@ router.patch("/:id", async (req, res) => {
             pollOptions[i].poll_id = poll.poll_id;
             newOption = await poll.createOption(pollOptions[i]);
         }
-        res.status(200).json(poll);
+        
     }
+    res.status(200).json(poll);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the patch existing poll route");
