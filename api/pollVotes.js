@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { PollVote } = require("../database");
+const {Poll} = require("../database");
 
 //GET all pollvotes
 router.get("/", async (req, res) => {
@@ -42,6 +43,7 @@ router.post("/", async (req, res) => {
             isSubmitted
         });
         res.status(201).json(newPollVote); // 201 for created
+        await Poll.increment('number_of_votes', { where: { poll_id: poll_id } });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the post new pollvote route");
@@ -76,6 +78,7 @@ router.delete("/:id", async(req, res) => {
         }
 
         await pollVote.destroy();
+        await Poll.decrement('number_of_votes', { where: { poll_id: poll_id } });
         res.status(200).send("Pollvote deleted successfully");
     } catch (error) {
         console.error(error);

@@ -18,7 +18,10 @@ const Option = db.define('Option', {
     option_text: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    id: {
+        type: DataTypes.INTEGER,
+    },
 });
 
 module.exports = Option;

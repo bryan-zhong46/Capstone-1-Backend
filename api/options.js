@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { Option } = require("../database");
+// replit code
+// const { Option } = require("../dummy-database");
 
 //GET all options
 router.get("/", async (req, res) => {
@@ -13,8 +15,21 @@ router.get("/", async (req, res) => {
     }
 });
 
+//GET all options from a specific poll
+router.get("/polls/:pollId", async(req,res) => {
+    try {
+        const pollId = req.params.pollId;
+        const options = await Option.findAll({where: {poll_id: pollId} });
+        res.status(200).json(options);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the get all options route for one poll");
+    }
+})
+
 // GET one option
-router.get("/:id", async(req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const option = await Option.findByPk(Number(req.params.id));
         if (!option) {
@@ -27,14 +42,40 @@ router.get("/:id", async(req, res) => {
     }
 });
 
+// // GET all options with the same poll_id
+// router.get("/", async (req, res) => {
+//     try {
+//         const poll_id = req.body;
+//         const optionsByPollID = await Option.findAll({ where: { poll_id: poll_id}});
+//         res.status(200).json(options);
+//     } catch (error) {
+//         console.error(error);
+//         console.log("Error getting options by poll id")
+//     }
+// });
+
+// POST options from an array
+// router.post("/", async (req, res) => {
+//     try {
+//         options = req.body;
+//         for (let i = 0; i < options.length; i++) {
+//             // Each option should be of the form:
+//             // { id: ..., option_text:..., poll_id: ... }
+//             console.log(options[i]);
+//             const { option_text, poll_id } = options[i];
+//             // create a new Option w/ option_text and poll_id
+//             const newOption = await Option.create(option_text, poll_id);
+//             res.status(201).json(newOption); // 201 for created
+//         }
+
 // POST (Create) one option
 router.post("/", async (req, res) => {
     try {
         const { poll_id, is_eliminated, option_text } = req.body;
         const newOption = await Option.create({
-                poll_id,
-                is_eliminated,
-                option_text
+            poll_id,
+            is_eliminated,
+            option_text,
         });
         res.status(201).json(newOption); // 201 for created
     } catch (error) {
@@ -44,7 +85,7 @@ router.post("/", async (req, res) => {
 });
 
 // PATCH an existing option
-router.patch("/:id", async(req, res) => {
+router.patch("/:id", async (req, res) => {
     try {
         const option = await Option.findByPk(Number(req.params.id));
         if (!option) {
@@ -59,7 +100,7 @@ router.patch("/:id", async(req, res) => {
 });
 
 // DELETE an existing option
-router.delete("/:id", async(req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const option = await Option.findByPk(Number(req.params.id));
         if (!option) {

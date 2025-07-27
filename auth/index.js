@@ -76,6 +76,7 @@ router.post("/auth0", async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isDisabled: user.isDisabled,
+        profile_image: user.profile_image,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -97,6 +98,7 @@ router.post("/auth0", async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isDisabled: user.isDisabled,
+        profile_image: user.profile_image,
       },
     });
   } catch (error) {
@@ -141,6 +143,7 @@ router.post("/signup", async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isDisabled: user.isDisabled,
+        profile_image: user.profile_image,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -155,7 +158,7 @@ router.post("/signup", async (req, res) => {
 
     res.send({
       message: "User created successfully",
-      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled },
+      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled, profile_image: user.profile_image },
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -194,6 +197,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         isDisabled: user.isDisabled,
+        profile_image: user.profile_image,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -208,7 +212,7 @@ router.post("/login", async (req, res) => {
 
     res.send({
       message: "Login successful",
-      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled },
+      user: { id: user.user_id, username: user.username, isAdmin: user.isAdmin, isDisabled: user.isDisabled, profile_image: user.profile_image },
     });
   } catch (error) {
     console.error("Login error:", error);
