@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Poll } = require("../database");
-// replit code
-// const { Poll, Option } = require("../dummy-database");
+const { Poll, PollVote } = require("../database");
 
 // GET all polls
 router.get("/", async (req, res) => {
@@ -12,6 +10,18 @@ router.get("/", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the get all polls route");
+    }
+});
+
+// GET polls of a specific user
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const polls = await Poll.findAll({ where: { creator_id: userId } });
+        res.status(200).json(polls);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the get polls for a specific user route");
     }
 });
 
@@ -45,7 +55,29 @@ router.get("/:id/options", async (req, res) => {
     }
 });
 
-// POST (Create) one  poll
+//GET all Pollvotes for a specific poll
+router.get("/:poll_id/results", async (req, res) => {
+    try {
+        const poll_id = req.params.poll_id;
+
+        const poll = await Poll.findByPk(poll_id);
+        if (!poll) return res.status(404).json({ error: "Poll not found" });
+        if (poll.poll_status !== "closed")
+            return res.status(403).json({ error: "Poll is not closed" });
+
+        const votes = await PollVote.findAll({
+            where: { poll_id },
+            order: [["user_id", "ASC"], ["rank", "ASC"]]
+        });
+
+        res.json(votes);
+    } catch (error) {
+        console.error("Error fetching poll results:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// POST (Create) one poll
 router.post("/", async (req, res) => {
     try {
         let { pollData, pollOptions, isPublishing } = req.body;
