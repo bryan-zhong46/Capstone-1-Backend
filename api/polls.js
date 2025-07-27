@@ -40,7 +40,7 @@ router.get("/:poll_id/results", async (req, res) => {
             return res.status(403).json({ error: "Poll is not closed" });
 
         const votes = await PollVote.findAll({
-            where: { poll_id },
+            where: { poll_id, isSubmitted: true, },
             attributes: ["user_id", "option_id", "rank", "isSubmitted"],
             order: [["user_id", "ASC"], ["rank", "ASC"]]
         });
