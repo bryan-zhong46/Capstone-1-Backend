@@ -43,13 +43,13 @@
 
 const polls = [
   {
-    id: 1,
+    poll_id: 1,
     title: "Poll Title 1",
     description: "Poll Description 1",
     userId: 1,
   },
   {
-    id: 2,
+    poll_id: 2,
     title: "Poll Title 2",
     description: "Poll Description 2",
     userId: 2,
@@ -58,10 +58,18 @@ const polls = [
 let nextPollId = polls.length + 1;
 
 const users = [
-  { id: 1, username: "Finn" },
-  { id: 2, username: "Shahid" },
+  { user_id: 1, username: "Finn" },
+  { user_id: 2, username: "Shahid" },
 ];
 let nextUserId = users.length + 1;
+
+const options = [
+  { options_id: 1, option_text: "Option 1", poll_id: 1 },
+  { options_id: 2, option_text: "Option 2", poll_id: 1 },
+  { options_id: 3, option_text: "Option 3", poll_id: 2 },
+  { options_id: 4, option_text: "Option 4", poll_id: 2 },
+];
+let nextOptionId = options.length + 1;
 
 const Poll = {
   findAll: function () {
@@ -71,9 +79,15 @@ const Poll = {
     return polls.find((poll) => poll.id === id);
   },
   create: function (poll) {
-    poll.id = nextPollId++;
+    poll.poll_id = nextPollId++;
     polls.push(poll);
     return poll;
+  },
+  createOption: function (poll, option) {
+    option.options_id = nextOptionId++;
+    option.poll_id = poll.poll_id;
+    options.push(option);
+    return option;
   },
   update: function (id, poll) {
     const index = polls.findIndex((poll) => poll.id === id);
@@ -102,7 +116,7 @@ const User = {
     return users.find((user) => user.id === id);
   },
   create: function (user) {
-    user.id = nextUserId++;
+    user.user_id = nextUserId++;
     users.push(user);
     return user;
   },
@@ -123,4 +137,41 @@ const User = {
   },
 };
 
-module.exports = { Poll, User };
+const Option = {
+  findAll: function () {
+    return options;
+  },
+  findByPk: function (id) {
+    return options.find((option) => option.id === id);
+  },
+  create: function (option_text, poll_id) {
+    console.log(option_text);
+    console.log(poll_id);
+    const option = {
+      options_id: nextOptionId++,
+      option_text: option_text,
+      poll_id: poll_id,
+    };
+    // option.options_id = nextOptionId++;
+    // option.poll_id = pollId;
+    options.push(option);
+    return option;
+  },
+  update: function (id, option) {
+    const index = options.findIndex((option) => option.id === id);
+    if (index === -1) {
+      throw new Error("option not found");
+    }
+    options[index] = { ...options[index], ...option };
+    return option;
+  },
+  delete: function (id) {
+    const index = options.findIndex((option) => option.id === id);
+    if (index === -1) {
+      throw new Error("option not found");
+    }
+    options.splice(index, 1);
+  },
+};
+
+module.exports = { Poll, User, Option };
