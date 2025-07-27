@@ -43,7 +43,10 @@ router.post("/", async (req, res) => {
             isSubmitted
         });
         res.status(201).json(newPollVote); // 201 for created
-        await Poll.increment('number_of_votes', { where: { poll_id: poll_id } });
+
+        if (isSubmitted) {
+            await Poll.increment('number_of_votes', { where: { poll_id: poll_id } });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the post new pollvote route");
