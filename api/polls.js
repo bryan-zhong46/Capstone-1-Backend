@@ -64,15 +64,39 @@ router.get("/:poll_id/results", async (req, res) => {
         const poll = await Poll.findByPk(poll_id);
         console.log("user_id from query:", user_id);
         if (!poll) return res.status(404).json({ error: "Poll not found" });
+        
         if (poll.poll_status !== "closed")
             return res.status(403).json({ error: "Poll is not closed" });
 
         const votes = await PollVote.findAll({
-            where: { poll_id, isSubmitted: true, },
+            where: { poll_id, isSubmitted: true },
             attributes: ["user_id", "option_id", "rank", "isSubmitted"],
             order: [["user_id", "ASC"], ["rank", "ASC"]]
         });
+        res.status(200).json(votes || []);
+    } catch (error) {
+        console.error("Error fetching poll results:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
 
+//GET all Pollvotes for a specific poll (published)
+router.get("/:poll_id/published", async (req, res) => {
+    try {
+        const poll_id = req.params.poll_id;
+        const user_id = req.query.userid;
+
+        const poll = await Poll.findByPk(poll_id);
+        console.log("user_id from query:", user_id);
+        if (!poll) return res.status(404).json({ error: "Poll not found" });
+
+        if (!user_id) {
+            return res.json([]);
+        }
+        const votes = await PollVote.findAll({
+            where: { poll_id, user_id },
+            order: [["user_id", "ASC"], ["rank", "ASC"]]
+        });
         res.status(200).json(votes || []);
     } catch (error) {
         console.error("Error fetching poll results:", error);
@@ -154,13 +178,16 @@ router.patch("/:id", async (req, res) => {
         // console.log("NEW POLL DATA: ", pollData);
         // console.log("NEW POLL OPTIONS: ", pollOptions);
         const poll = await Poll.findByPk(req.params.id);
-        const pollOptionsOld = await poll.getOptions();
+        
         // console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptionsOld);
         if (!poll) {
             return res.status(404).send("Poll not found");
         }
 
         await poll.update(pollData);
+
+        if (pollOptions && pollOptions.length > 0) {
+            const pollOptionsOld = await poll.getOptions();
         // need to destroy all the options that were previously associated with this poll
         for (let i = 0; i < pollOptionsOld.length; i++) {
            const optionOld = pollOptionsOld[i];
@@ -173,6 +200,7 @@ router.patch("/:id", async (req, res) => {
             newOption = await poll.createOption(pollOptions[i]);
         }
         res.status(200).json(poll);
+    }
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the patch existing poll route");
