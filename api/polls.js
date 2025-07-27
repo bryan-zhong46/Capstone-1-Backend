@@ -41,10 +41,11 @@ router.get("/:poll_id/results", async (req, res) => {
 
         const votes = await PollVote.findAll({
             where: { poll_id },
+            attributes: ["user_id", "option_id", "rank", "isSubmitted"],
             order: [["user_id", "ASC"], ["rank", "ASC"]]
         });
 
-        res.json(votes);
+        res.status(200).json(votes || []);
     } catch (error) {
         console.error("Error fetching poll results:", error);
         res.status(500).json({ error: "Server error" });
@@ -57,7 +58,7 @@ router.get("/:pollId/options", async (req, res) => {
     const options = await Option.findAll({
       where: { poll_id: req.params.pollId },
     });
-    res.json(options);
+    res.status(200).json(options || []);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching poll options" });
