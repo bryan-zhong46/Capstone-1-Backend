@@ -45,14 +45,23 @@ router.get("/:id", async(req, res) => {
 router.get("/:poll_id/results", async (req, res) => {
     try {
         const poll_id = req.params.poll_id;
+        const user_id = req.query.userid;
 
         const poll = await Poll.findByPk(poll_id);
+        console.log("user_id from query:", user_id);
         if (!poll) return res.status(404).json({ error: "Poll not found" });
         //if (poll.poll_status !== "closed")
           //  return res.status(403).json({ error: "Poll is not closed" });
 
+        if (!user_id) {
+            return res.json([]);
+        }
+
         const votes = await PollVote.findAll({
-            where: { poll_id },
+            where: {
+            poll_id,
+            user_id,
+            },
             order: [["user_id", "ASC"], ["rank", "ASC"]]
         });
 
