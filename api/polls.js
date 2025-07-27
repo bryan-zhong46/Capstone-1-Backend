@@ -147,13 +147,15 @@ router.patch("/:id", async (req, res) => {
         // console.log("NEW POLL DATA: ", pollData);
         // console.log("NEW POLL OPTIONS: ", pollOptions);
         const poll = await Poll.findByPk(req.params.id);
-        const pollOptionsOld = await poll.getOptions();
+        
         // console.log("POLL OPTIONS FROM PATCH ROUTE", pollOptionsOld);
         if (!poll) {
             return res.status(404).send("Poll not found");
         }
 
         await poll.update(pollData);
+        if (pollOptions && pollOptions.length > 0) {
+            const pollOptionsOld = await poll.getOptions();
         // need to destroy all the options that were previously associated with this poll
         for (let i = 0; i < pollOptionsOld.length; i++) {
            const optionOld = pollOptionsOld[i];
@@ -166,7 +168,8 @@ router.patch("/:id", async (req, res) => {
             newOption = await poll.createOption(pollOptions[i]);
         }
         res.status(200).json(poll);
-    } catch (error) {
+    } }
+    catch (error) {
         console.error(error);
         res.status(500).send("Error from the patch existing poll route");
     }
