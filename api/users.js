@@ -83,6 +83,7 @@ router.patch("/:id", async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       isDisabled: user.isDisabled,
+      profile_image: user.profile_image,
     };
     res.status(200).json(userSafe);
   } catch (error) {
