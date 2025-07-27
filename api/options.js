@@ -15,6 +15,19 @@ router.get("/", async (req, res) => {
     }
 });
 
+//GET all options from a specific poll
+router.get("/polls/:pollId", async(req,res) => {
+    try {
+        const pollId = req.params.pollId;
+        const options = await Option.findAll({where: {poll_id: pollId} });
+        res.status(200).json(options);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("Error from the get all options route for one poll");
+    }
+})
+
 // GET one option
 router.get("/:id", async (req, res) => {
     try {
