@@ -42,11 +42,12 @@ router.post("/", async (req, res) => {
             rank,
             isSubmitted
         });
-        res.status(201).json(newPollVote); // 201 for created
 
         if (isSubmitted) {
             await Poll.increment('number_of_votes', { where: { poll_id: poll_id } });
         }
+
+        res.status(201).json(newPollVote); // 201 for created
     } catch (error) {
         console.error(error);
         res.status(500).send("Error from the post new pollvote route");
@@ -63,7 +64,15 @@ router.patch("/:id", async(req, res) => {
         if (req.user && pollVote.user_id !== req.user.id) {
            return res.status(403).send("You can't edit this vote.");
         }
+        const { isSubmitted } = req.body;
+        const hasSubmitted = pollVote.isSubmitted;
         await pollVote.update(req.body);
+
+        if (isSubmitted && !hasSubmitted) {
+            await Poll.increment("number_of_votes", {
+            where: { poll_id: pollVote.poll_id },
+        });
+    }
         res.status(200).json(pollVote);
     } catch (error) {
         console.error(error);

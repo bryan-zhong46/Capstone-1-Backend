@@ -59,10 +59,7 @@ router.get("/:id/options", async (req, res) => {
 router.get("/:poll_id/results", async (req, res) => {
     try {
         const poll_id = req.params.poll_id;
-        const user_id = req.query.userid;
-
         const poll = await Poll.findByPk(poll_id);
-        console.log("user_id from query:", user_id);
         if (!poll) return res.status(404).json({ error: "Poll not found" });
         
         if (poll.poll_status !== "closed")
@@ -82,27 +79,34 @@ router.get("/:poll_id/results", async (req, res) => {
 
 //GET all Pollvotes for a specific poll (published)
 router.get("/:poll_id/published", async (req, res) => {
-    try {
-        const poll_id = req.params.poll_id;
-        const user_id = req.query.userid;
+  try {
+    const poll_id = req.params.poll_id;
+    const user_id = req.query.userid;
 
-        const poll = await Poll.findByPk(poll_id);
-        console.log("user_id from query:", user_id);
-        if (!poll) return res.status(404).json({ error: "Poll not found" });
+    const poll = await Poll.findByPk(poll_id);
+    if (!poll) return res.status(404).json({ error: "Poll not found" });
 
-        if (!user_id) {
-            return res.json([]);
-        }
-        const votes = await PollVote.findAll({
-            where: { poll_id, user_id },
-            order: [["user_id", "ASC"], ["rank", "ASC"]]
-        });
-        res.status(200).json(votes || []);
-    } catch (error) {
-        console.error("Error fetching poll results:", error);
-        res.status(500).json({ error: "Server error" });
+    let votes;
+    if (user_id) {
+      votes = await PollVote.findAll({
+        where: { poll_id, user_id },
+        order: [["user_id", "ASC"], ["rank", "ASC"]],
+      });
+    } else {
+      // Fetch all ballots for the poll
+      votes = await PollVote.findAll({
+        where: { poll_id },
+        order: [["user_id", "ASC"], ["rank", "ASC"]],
+      });
     }
+
+    res.status(200).json(votes || []);
+  } catch (error) {
+    console.error("Error fetching poll results:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
+
 
 // GET /api/polls/:pollId/options
 router.get("/:pollId/options", async (req, res) => {
