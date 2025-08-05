@@ -5,7 +5,7 @@
 This project uses Express.js to serve up an API server, and Sequelize to connect to a PostgreSQL database. It uses JWTs for authentication with username and password.
 
 You will also need to create the database: by default it is called `capstone-1`, but you are welcome to rename it in `database/db.js`
-
+.
 After that, you can get started with these commands
 
 ```
